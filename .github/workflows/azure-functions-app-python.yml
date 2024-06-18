@@ -75,7 +75,7 @@ jobs:
           source venv/bin/activate
           pip install uvicorn fastapi pandas numpy scikit-learn click==8.0.0
           export PATH=$PATH:~/.local/bin
-          python3.12 -m uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+          uvicorn main:app --host 0.0.0.0 --port 8000 --reload
           
                             
 
