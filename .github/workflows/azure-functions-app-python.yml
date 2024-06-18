@@ -55,14 +55,16 @@ jobs:
           
   setup-webserver:
     runs-on: ubuntu-latest
+    needs: copy-files
     steps:
-    - name: executing remote ssh commands using password
+    - name: setup web server
       uses: appleboy/ssh-action@v1.0.3
       with:
         host: ${{ secrets.SERVER_IP }}
         username: ${{ secrets.USERNAME }}
         password: ${{ secrets.PASSWORD }}
         port: ${{ secrets.SERVER_PORT }}
+        key: ${{ secrets.SERVER_SSH_KEY }}
         script: |
           sudo apt install software-properties-common
           sudo add-apt-repository ppa:deadsnakes/ppa
