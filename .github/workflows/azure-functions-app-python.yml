@@ -71,11 +71,12 @@ jobs:
           sudo apt update
           sudo apt install python3.12 -y
           sudo apt install python3-pip -y
+          mkdir static
           python3.12 -m venv venv
           source venv/bin/activate
           pip install uvicorn fastapi pandas numpy scikit-learn click==8.0.0
           export PATH=$PATH:~/.local/bin
-          uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+          nohup uvicorn main:app --host 0.0.0.0 --port 8000 --reload > ~/uvicorn.log 2>&1 & disown
           
                             
 
