@@ -28,11 +28,11 @@ env:
   PYTHON_VERSION: '3.9'                     # set this to the python version to use (e.g. '3.6', '3.7', '3.8')
 
 jobs:
-  build-and-deploy:
+  copy-files:
     runs-on: ubuntu-latest
     environment: dev
     steps:
-    - name: 'Checkout GitHub Action'
+    - name: 'Copy files to remote server'
       uses: actions/checkout@v4
 
     # - name: Azure login
@@ -52,6 +52,28 @@ jobs:
           SERVER_IP: ${{ secrets.SERVER_IP }}
           USERNAME: ${{ secrets.USERNAME }}
           SERVER_DESTINATION: ${{ secrets.SERVER_DESTINATION }}
+          
+  setup-webserver:
+    runs-on: ubuntu-latest
+    steps:
+    - name: executing remote ssh commands using password
+      uses: appleboy/ssh-action@v1.0.3
+      with:
+        host: ${{ secrets.SERVER_IP }}
+        username: ${{ secrets.USERNAME }}
+        password: ${{ secrets.PASSWORD }}
+        port: ${{ secrets.SERVER_PORT }}
+        script: |
+          sudo apt install software-properties-common
+          sudo add-apt-repository ppa:deadsnakes/ppa
+          sudo apt update
+          sudo apt install python3.12
+          sudo apt install python3-pip
+          python3 -m venv venv
+          source venv/bin/activate
+          pip install uvicorn fastapi pandas numpy scikit-learn
+          uvicorn main:app --host 0.0.0.0 --port 8000 --reload
+          
                             
 
     # - name: Setup Python ${{ env.PYTHON_VERSION }} Environment
