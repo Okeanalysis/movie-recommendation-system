@@ -69,8 +69,8 @@ jobs:
           sudo apt install software-properties-common
           sudo add-apt-repository ppa:deadsnakes/ppa
           sudo apt update
-          sudo apt install python3.12
-          sudo apt install python3-pip
+          sudo apt install python3.12 -y
+          sudo apt install python3-pip -y
           python3 -m venv venv
           source venv/bin/activate
           pip install uvicorn fastapi pandas numpy scikit-learn
