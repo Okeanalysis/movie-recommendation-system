@@ -1,7 +1,6 @@
 # -*- coding: utf-8 -*-
 """
 Spyder Editor
-
 This is a temporary script file.
 """
 
@@ -36,26 +35,26 @@ def recommend(movie_title: str, new_df, tag_matrix, tfidf_vectorizer) -> List[st
     if movie_title in new_df['title'].values:
         # Get the index of the movie that matches the title
         movie_index = new_df[new_df['title'] == movie_title].index[0]
-        
+
         # Calculate cosine similarities for the movie with all other movies
         similarities = cosine_similarity(tag_matrix[movie_index], tag_matrix).flatten()
-        
+
         # Get indices of movies sorted by similarity score (excluding the movie itself)
         similar_indices = similarities.argsort()[::-1][1:11]
-        
+
         # Get the titles of the top 10 most similar movies
         recommended_movies = new_df.iloc[similar_indices]['title'].tolist()
     else:
         # If the movie is not found, calculate similarity for the given title as a new entry
         query_vector = tfidf_vectorizer.transform([movie_title])
         similarities = cosine_similarity(query_vector, tag_matrix).flatten()
-        
+
         # Get indices of movies sorted by similarity score
         similar_indices = similarities.argsort()[::-1][:10]
-        
+
         # Get the titles of the top 10 most similar movies
         recommended_movies = new_df.iloc[similar_indices]['title'].tolist()
-    
+
     return recommended_movies
 
 @app.get("/", response_class=HTMLResponse)
@@ -66,5 +65,4 @@ async def read_root(request: Request):
 async def recommend_name(request: Request, query: str = Form(...)):
     recommended_movies = recommend(query, new_df, tag_matrix, tfidf_vectorizer)
     return templates.TemplateResponse("index.html", {"request": request, "recommendations": recommended_movies})
-
 
